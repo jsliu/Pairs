@@ -11,7 +11,7 @@ options(digits.secs=6)
 
 
 
-filename <- "/Users/jason/Documents/code/testPairs/cffex.csv"
+filename <- "/Users/jason/Documents/code/pairs_example/cffex.csv"
 data <- fread(filename)
 setkey(data,TradingDay,UpdateTime)
 data[,DateTime:=strptime(paste(TradingDay,UpdateTime),"%Y%m%d%H:%M:%S")+UpdateMillisec/1000]
@@ -39,7 +39,7 @@ plot.zoo(basket.daily,screens=1,col=tsRainbow)
 
 # pairs trading
 future.cost <- 0.3e-4
-k <- 10;
+k <- 30;
 on <- 'secs'
 pfRet <- rep(0,length(day.close)-1)
 
