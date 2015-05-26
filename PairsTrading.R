@@ -21,7 +21,7 @@ half.life <- function(trade.pairs)
   lookback <- round(half.life)
 }
 
-pairs.trading <- function(trade.pairs, future.cost=0.3e-4, etf.cost=1.5e-4, lookback=45, 
+pairs.trading <- function(trade.pairs, future.cost=0.3e-4, lookback=45, 
                           entryZscore=1, exitZscore=0, stoplossZscore=4, 
                           lagged=F, method=c("OLS", "TLS", "KF"))
 {
@@ -61,9 +61,9 @@ pairs.trading <- function(trade.pairs, future.cost=0.3e-4, etf.cost=1.5e-4, look
     HHt <- diag(delta/(1-delta),m,m)
     ct <- matrix(0, d, 1)
     GGt <- diag(err, d, d)
-    yt <- matrix(coredata(trade.pairs$INDEXFUTURE), ncol=n)
+    yt <- matrix(coredata(trade.pairs[,1]), ncol=n)
     Zt <- array(NA, dim=c(d,m,n))
-    Zt[1,,] <- t(coredata(trade.pairs$ETF))
+    Zt[1,,] <- t(coredata(trade.pairs[,2]))
     #Zt[1,,] <- t(cbind(1, coredata(trade.pairs$ETF)))
     
     out <- fkf(a0, P0, dt, ct, Tt, Zt, HHt, GGt, yt)
@@ -114,7 +114,7 @@ pairs.trading <- function(trade.pairs, future.cost=0.3e-4, etf.cost=1.5e-4, look
   #ret.net.cost <- cbind(ret[,1]-future.cost, ret[,2]-etf.cost)
   pnl <- rowSums(positions * ret)
 
-  net.pnl <- pnl - rowSums(abs(positions) * c(future.cost, etf.cost))
+  net.pnl <- pnl - rowSums(abs(positions) * c(future.cost, future.cost))
   pf.ret <- net.pnl/rowSums(abs(positions))
   pf.ret[is.na(pf.ret)] <- 0
 
